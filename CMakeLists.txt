@@ -1,5 +1,6 @@
-set(COMPONENT_ADD_INCLUDEDIRS include)
-set(COMPONENT_SRCS "frequency_count.c")
-register_component()
+idf_component_register(SRC_DIRS "."
+    INCLUDE_DIRS "include"
+    REQUIRES esp_driver_pcnt driver
+    )
 
 

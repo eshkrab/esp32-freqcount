@@ -42,10 +42,7 @@
 
 #define TAG "frequency_counter"
 
-// In ESP-IDF v4.1-beta1 (and presumably newer), the macro RMT_MEM_BLOCK_BYTE_NUM has been removed
-#if (ESP_IDF_VERSION_MAJOR == 4)
-# define RMT_MEM_BLOCK_BYTE_NUM ((RMT_CHANNEL_MEM_WORDS) * 4)
-#endif
+# define RMT_MEM_BLOCK_BYTE_NUM 256
 
 static void init_rmt(uint8_t tx_gpio, rmt_channel_t channel, uint8_t clk_div)
 {
@@ -74,7 +71,8 @@ static int create_rmt_window(rmt_item32_t * items, double sampling_window_second
 
     // enable counter for exactly x seconds:
     int32_t total_duration = (uint32_t)(sampling_window_seconds / rmt_period);
-    ESP_LOGD(TAG, "total_duration %f seconds = %d * %g seconds", sampling_window_seconds, total_duration, rmt_period);
+    // ESP_LOGD(TAG, "total_duration %f seconds = %d * %" PRId32" seconds", sampling_window_seconds, total_duration, rmt_period);
+    // ESP_LOGD(TAG, "total_duration %f seconds = %d * %f seconds", sampling_window_seconds, total_duration, rmt_period);
 
     // max duration per item is 2^15-1 = 32767
     while (total_duration > 0)
@@ -83,7 +81,7 @@ static int create_rmt_window(rmt_item32_t * items, double sampling_window_second
         items[num_items].level0 = 1;
         items[num_items].duration0 = duration;
         total_duration -= duration;
-        ESP_LOGD(TAG, "duration %d", duration);
+        ESP_LOGD(TAG, "duration %lu", duration);
 
         if (total_duration > 0)
         {
